@@ -1,6 +1,8 @@
-let state = {count: 0, frogs: 0, weather: 'cloudy', calories: 100, colors: ['red']};
+let state;
 
-function changeState(state, action){
+// let state = {count: 0, frogs: 0, weather: 'cloudy', calories: 100, colors: ['none']};
+
+function changeState(state = {count: 0, frogs: 0, weather: 'cloudy', calories: 100, colors: ['none']}, action){
   switch(action.type) {
 
     case "INCREASE_COUNT":
@@ -15,12 +17,9 @@ function changeState(state, action){
     case "CALORIES":
       return Object.assign({}, state, {calories: state.calories + 12});
     
-    case "COLOR_BLUE":
-      return Object.assign({}, state, {colors: state.colors + 'blue' });
-    
-    case "COLOR_GREEN":
-      return Object.assign({}, state, {colors: state.colors + 'green' });
-    
+    case "ADD_COLORS":
+      return Object.assign({}, state, {colors: state.colors, colors: ['blue', 'yellow', 'green'] });
+       
     default:
       return state;
   }
@@ -31,25 +30,29 @@ const dispatch = (action) => {
   render();
 };
 
-const render = () => {
+function handleClick(){
+  state = changeState(state, {type: 'ADD_FROG'})
+};
+
+const render = () => { 
+  let colorsList = state.colors.map((color) => {
+    return `<li>${color}</li>`;
+  }).join(' ');
+  
   let container = document.getElementById('container');
   container.innerHTML= `
     <div>
-      <p>State:</p>
-      <p>Count: ${state.count}</p>
-      <p>Frogs: ${state.frogs}</p>
-      <p>Weather: ${state.weather}</p>
-      <p>Calories: ${state.calories}</p>
-      <p>Colors: ${state.colors}</p>
-    </div>`
-  
+      <div class="stats">
+          <button onClick=${handleClick()}>Add Frog</button>
+        <p>State:</p>
+        <p>Count: ${state.count}</p>
+        <p>Frogs: ${state.frogs}</p>
+        <p>Weather: ${state.weather}</p>
+        <p>Calories: ${state.calories}</p>
+        <p>ColorsList: ${colorsList}</p>
+      </div>
+    </div>
+  `
 }
 
-
-// const render = () => {
-//   let container = document.getElementById('container');
-//   let petsList = state.pets.map((pet) => {
-//     return `<li>${pet.name}</li>`;
-//   }).join(' ');
-//   container.innerHTML = `<ul>${petsList}</ul>`;
-// }
+dispatch({ type: '@@INIT' })
